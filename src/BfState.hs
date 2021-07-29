@@ -18,7 +18,7 @@ data BrainfuckState = BrainfuckState { prevMemory :: [Int]  -- All memory before
 generateProgramStartState :: String -> BrainfuckState
 generateProgramStartState instructions = BrainfuckState { prevMemory = []
                                                         , currMemory = 0
-                                                        , restMemory = [0]
+                                                        , restMemory = []
                                                         , program = instructions
                                                         , programCounter = 0
                                                         , programLength = length instructions
