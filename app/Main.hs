@@ -1,6 +1,11 @@
 module Main where
 
-import Lib
+import BfInterpreter(runBrainfuckProgram)
+import BfState(showMemory)
 
 main :: IO ()
-main = readInstructions
+main = do
+    putStrLn "Program start."
+    finalState <- runBrainfuckProgram ",>,[<+>-]<.>>>>+++"
+    putStrLn ""
+    putStrLn $ "Final memory layout: " ++ showMemory finalState

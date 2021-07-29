@@ -1,29 +1,10 @@
-module Lib
-    ( readInstructions
+module BfInterpreter
+    ( runBrainfuckProgram
     ) where
 
--- | The data `BrainfuckState` encapsultes the entire brainfuck state: memory and the current pointer index
-data BrainfuckState = BrainfuckState { prevMemory :: [Int]  -- All memory before the index pointer
-                                     , currMemory :: Int    -- The memory at the index pointer
-                                     , restMemory :: [Int]  -- All memory after the index pointer
-                                     , program :: String
-                                     , programCounter :: Int
-                                     , programLength :: Int
-                                     } deriving (Show)
-
--- | Generate a start state of a Brainfuck program using the given instructions as a base and setting
--- | All other necessary properties to zero
-generateProgramStartState :: String -> BrainfuckState
-generateProgramStartState instructions = BrainfuckState { prevMemory = []
-                                                        , currMemory = 0
-                                                        , restMemory = [0]
-                                                        , program = instructions
-                                                        , programCounter = 0
-                                                        , programLength = length instructions
-                                                        }
-
-readInstructions :: IO ()
-readInstructions = putStrLn "TODO: read instructions"
+import BfState ( BrainfuckState(..)
+             , generateProgramStartState
+             )
 
 -- | Run the Brainfuck program with a default (all-zero) state
 runBrainfuckProgram :: String -> IO BrainfuckState
@@ -75,7 +56,11 @@ processInstruction ']' state@BrainfuckState{currMemory = c, program = instructio
 processInstruction _ state = return state
 
 -- | Return the index of the matching pair of brackets
-getMatchingIndex :: Eq a => a -> a -> Int -> [a] -> Int
+getMatchingIndex :: Eq a => a -- The designator for an open pair
+    -> a -- The designator for the closed pair
+    -> Int -- The number of encounters seen so far
+    -> [a] -- The list to iterate through to scan for pairs
+    -> Int -- The index in the given list that the closing pair can be found at
 getMatchingIndex openValue closeValue encounters (x:xs)
     | x == openValue = 1 + getMatchingIndex openValue closeValue (encounters + 1) xs
     | x == closeValue = if encounters - 1 == 0 then 0 else 1 + getMatchingIndex openValue closeValue (encounters - 1) xs
