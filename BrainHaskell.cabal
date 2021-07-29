@@ -25,7 +25,8 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      BfInterpreter
+      BfState
   other-modules:
       Paths_BrainHaskell
   hs-source-dirs:
@@ -57,4 +58,5 @@ test-suite BrainHaskell-test
   build-depends:
       BrainHaskell
     , base >=4.7 && <5
+    , hspec
   default-language: Haskell2010
