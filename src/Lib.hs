@@ -15,10 +15,10 @@ processInstructions :: String -> [Int] -> Int -> IO [Int]
 -- Compute memory manipulation
 processInstructions ('+':xs) memory index = processInstructions xs newMemory index
     where
-        newMemory = replaceIndex memory (memory !! index + 1) index
+        newMemory = replaceAtIndex memory (memory !! index + 1) index
 processInstructions ('-':xs) memory index = processInstructions xs newMemory index
     where
-        newMemory = replaceIndex memory (memory !! index - 1) index
+        newMemory = replaceAtIndex memory (memory !! index - 1) index
 
 -- Compute I/O
 processInstructions ('.':xs) memory index = do 
@@ -35,8 +35,8 @@ processInstructions ('[':xs) memory index = return [2]
 processInstructions (']':xs) memory index = return [2]
 processInstructions _ memory _ = return memory 
 
-replaceIndex :: [a] -> a -> Int -> [a]
-replaceIndex [] _ _ = []
-replaceIndex (x:xs) item index
+replaceAtIndex :: [a] -> a -> Int -> [a]
+replaceAtIndex [] _ _ = []
+replaceAtIndex (x:xs) item index
     | index == 0 = item:xs
-    | otherwise = x:replaceIndex xs item (index - 1)
+    | otherwise = x:replaceAtIndex xs item (index - 1)
