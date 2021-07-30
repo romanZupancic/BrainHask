@@ -27,6 +27,7 @@ library
   exposed-modules:
       BfInterpreter
       BfState
+      CmdOptions
   other-modules:
       Paths_BrainHaskell
   hs-source-dirs:

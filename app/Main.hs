@@ -1,11 +1,13 @@
 module Main where
 
+import System.Environment ( getArgs )
+
+import CmdOptions(parseArguments)
 import BfInterpreter(runBrainfuckProgram)
 import BfState(showMemory)
 
 main :: IO ()
 main = do
-    putStrLn "Program start."
-    finalState <- runBrainfuckProgram ",>,[<+>-]<.>>>>+++"
-    putStrLn ""
-    putStrLn $ "Final memory layout: " ++ showMemory finalState
+    args <- getArgs
+    let (optsRecord, nonops) = parseArguments args
+    print optsRecord
