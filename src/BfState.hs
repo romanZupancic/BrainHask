@@ -2,6 +2,7 @@ module BfState
     ( BrainfuckState(..)
     , generateProgramStartState
     , showMemory
+    , addInstructions
     ) where
 
 -- | The data `BrainfuckState` encapsultes the entire brainfuck state: memory and the current pointer index
@@ -23,6 +24,12 @@ generateProgramStartState instructions = BrainfuckState { prevMemory = []
                                                         , programCounter = 0
                                                         , programLength = length instructions
                                                         }
+
+-- | Return a modification of the given Brainfuck state with the additional instructions inserted
+addInstructions :: BrainfuckState -> String -> BrainfuckState
+addInstructions state@BrainfuckState{program = p, programLength = pl} instructions = 
+    state { program = p ++ instructions
+          , programLength = pl + length instructions}
 
 showMemory :: BrainfuckState -> String
 showMemory BrainfuckState{prevMemory = p, currMemory = c, restMemory = r}

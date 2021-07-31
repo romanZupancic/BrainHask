@@ -39,6 +39,7 @@ executable BrainHaskell-exe
   main-is: Main.hs
   other-modules:
       CmdOptions
+      Repl
       Paths_BrainHaskell
   hs-source-dirs:
       app

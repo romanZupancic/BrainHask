@@ -7,7 +7,7 @@ import System.Console.GetOpt
     ( OptDescr(..), ArgDescr(NoArg, ReqArg), getOpt, ArgOrder(RequireOrder) )
 
 data Options = Options { optHelp :: Bool
-                       , optErrors :: [String]
+                       , optErrors :: Maybe [String]
                        , optVersion :: Bool
                        , optInteractive :: Bool
                        , optMemoryOnExit :: Bool
@@ -16,7 +16,7 @@ data Options = Options { optHelp :: Bool
 
 defaultOptions :: Options
 defaultOptions = Options { optHelp = False
-                         , optErrors = []
+                         , optErrors = Nothing
                          , optVersion = False
                          , optInteractive = False
                          , optMemoryOnExit = False
@@ -40,5 +40,6 @@ optionsListToRecord = foldl (flip id) defaultOptions
 parseArguments :: [String] -> (Options, [String])
 parseArguments args = 
     case getOpt RequireOrder optionDescriptions args of
+        (opts, [], [])      -> ((optionsListToRecord opts) { optInteractive = True }, [])
         (opts, nonopts, []) -> (optionsListToRecord opts, nonopts)
-        (_, nonopts, errs) -> (defaultOptions { optHelp = True, optErrors = errs}, nonopts)
+        (_, nonopts, errs)  -> (defaultOptions { optErrors = Just errs}, nonopts)

@@ -1,6 +1,9 @@
 module BfInterpreter
     ( runBrainfuckProgram
+    , processInstructions
     ) where
+
+import System.IO ( stdout, hFlush )
 
 import BfState ( BrainfuckState(..)
              , generateProgramStartState
@@ -29,6 +32,7 @@ processInstruction '-' state@BrainfuckState{currMemory = c} = return state { cur
 -- Compute I/O
 processInstruction '.' state@BrainfuckState{currMemory = c} = do
     putStr $ show c
+    hFlush stdout
     return state
 processInstruction ',' state = do
     input <- getLine
