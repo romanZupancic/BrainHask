@@ -4,6 +4,8 @@ module BfInterpreter
     ) where
 
 import System.IO ( stdout, hFlush )
+import Data.Char ( ord )
+import Text.Read ( readMaybe )
 
 import BfState ( BrainfuckState(..)
              , generateProgramStartState
@@ -36,7 +38,10 @@ processInstruction '.' state@BrainfuckState{currMemory = c} = do
     return state
 processInstruction ',' state = do
     input <- getLine
-    return state {currMemory = read input}
+    case (readMaybe input :: Maybe Int) of
+        Nothing ->  return state { currMemory = if null input then 0 else ord $ head input }
+        Just inp -> return state { currMemory = inp }
+    
 
 -- Compute index movements
 processInstruction '<' state@BrainfuckState{prevMemory=[]} 
