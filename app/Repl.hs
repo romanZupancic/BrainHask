@@ -14,9 +14,12 @@ brainfuckRepl state = do
     case read of
         (':':xs) -> do
             case xs of
-                "q" -> putStrLn "Quitting..."
-                _ -> putStrLn $ xs ++ " is not a recognized command."
-            brainfuckRepl state
+                "q" -> do 
+                    putStrLn "Quitting..."
+                    return state
+                _ -> do
+                    putStrLn $ xs ++ " is not a recognized command."
+                    brainfuckRepl state
         _ -> do
             let readState = addInstructions state read
             newState <- processInstructions readState
@@ -25,6 +28,6 @@ brainfuckRepl state = do
 
 prompt :: IO String
 prompt = do
-    putStr "\n~~| "
+    putStr "\n~~|"
     hFlush stdout
     getLine 
