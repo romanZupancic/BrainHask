@@ -27,7 +27,6 @@ library
   exposed-modules:
       BfInterpreter
       BfState
-      CmdOptions
   other-modules:
       Paths_BrainHaskell
   hs-source-dirs:
@@ -39,6 +38,7 @@ library
 executable BrainHaskell-exe
   main-is: Main.hs
   other-modules:
+      CmdOptions
       Paths_BrainHaskell
   hs-source-dirs:
       app
