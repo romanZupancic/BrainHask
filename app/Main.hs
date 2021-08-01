@@ -29,7 +29,7 @@ main = do
         -- Otherwise default behaviour
         _ -> runBfProgramWithOptions "" optsRecord
     where
-        usageDesc = usageInfo "Usage: bh [OPTION...] [-c cmd | FILE | -]" optionDescriptions
+        usageDesc = usageInfo "Usage: BrainHask [OPTION...] [-c cmd | FILE | -]" optionDescriptions
 
 runBfProgramWithOptions :: String -> Options -> IO ()
 runBfProgramWithOptions instructions opts = do

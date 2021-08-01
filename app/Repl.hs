@@ -23,11 +23,11 @@ brainfuckRepl state = do
         _ -> do
             let readState = addInstructions state read
             newState <- processInstructions readState
-            putStrLn $ '\n' : showMemory newState
+            putStrLn $ showMemory newState
             brainfuckRepl newState
 
 prompt :: IO String
 prompt = do
-    putStr "\n~~|"
+    putStr "\n~~| "
     hFlush stdout
     getLine 
