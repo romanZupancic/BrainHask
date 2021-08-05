@@ -7,7 +7,7 @@ import Control.Monad ( when )
 import Control.Exception ( try, IOException )
 
 import CmdOptions ( parseArguments, Options(..), optionDescriptions )
-import Repl ( brainfuckRepl )
+import Repl ( startBrainfuckRepl )
 
 import BfInterpreter ( runBrainfuckProgram )
 import BfState ( showMemory )
@@ -35,7 +35,7 @@ runBfProgramWithOptions :: String -> Options -> IO ()
 runBfProgramWithOptions instructions opts = do
     state <- runBrainfuckProgram instructions
     if optInteractive opts then do 
-        interactiveState <- brainfuckRepl state
+        interactiveState <- startBrainfuckRepl state
         finalMemory state
     else finalMemory state
     where 

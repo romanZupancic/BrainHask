@@ -18,8 +18,7 @@ runBrainfuckProgram instructions = processInstructions $ generateProgramStartSta
 -- | Run all instructions in sequence
 processInstructions :: BrainfuckState -> IO BrainfuckState
 processInstructions state@BrainfuckState{program = p, programCounter = pc, programLength = pl} 
-    | pl == pc = do     -- At the end of the program, return just it's state
-        return state
+    | pl == pc = return state        -- At the end of the program, return just it's state
     | otherwise = do    -- Run the program one instruction at a time
         newState <- processInstruction (p !! pc) state
         processInstructions newState {programCounter = programCounter newState + 1}
@@ -64,7 +63,7 @@ processInstruction ']' state@BrainfuckState{currMemory = c, program = instructio
 -- All other characters are comments and do not change state
 processInstruction _ state = return state
 
--- | Return the index of the matching pair of brackets
+-- | Return the index of the matching pair of brackets, moving from left to right
 getMatchingIndex :: Eq a => a -- The designator for an open pair
     -> a -- The designator for the closed pair
     -> Int -- The number of encounters seen so far
