@@ -2,7 +2,7 @@ module Main where
 
 import System.Environment ( getArgs )
 import System.Console.GetOpt ( usageInfo )
-import System.Exit (exitFailure)
+import System.Exit ( exitFailure )
 import Control.Monad ( when )
 import Control.Exception ( try, IOException )
 

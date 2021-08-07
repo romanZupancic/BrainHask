@@ -4,7 +4,7 @@ import System.IO ( stdout, hFlush )
 import Control.Monad ( when )
 
 import BfInterpreter ( processInstructions )
-import BfState ( BrainfuckState
+import BfState ( BrainfuckState (BrainfuckState, programLength)
                , addInstructions
                , showMemory
                )
@@ -15,21 +15,21 @@ data ReplState = ReplState { replBfState :: BrainfuckState
                            } deriving (Show)
 
 startBrainfuckRepl :: BrainfuckState -> IO BrainfuckState
-startBrainfuckRepl bfState = do
-    putStrLn "Brainhask v1.0.0\nType ':help' for more information, or ':quit' to quit"
-    finalReplState <- brainfuckRepl ReplState { replBfState = bfState, replQuit = False, replToggleMemory = True }
+startBrainfuckRepl bfState@BrainfuckState{ programLength = pl } = do
+    if pl == 0 then putStrLn "\nBrainhask v1.0.0 REPL\nType ':help' for more information, or ':quit' to quit.\n" else putStrLn ""
+    finalReplState <- brainfuckRepl ReplState { replBfState = bfState, replQuit = False, replToggleMemory = False } -- Set default states
     return $ replBfState finalReplState
 
 brainfuckRepl :: ReplState -> IO ReplState
 brainfuckRepl state@ReplState{ replBfState = bfState
-                             } = do 
-        -- TODO: Decide whether to evaluate previous state first, and then ask for commands (Evaluate - print - read - loop)
+                             , replQuit = rQuit
+                             , replToggleMemory = rToggleMemory
+                             } = if rQuit then return state -- Quit the repl
+    else do -- Print and then start a new repl iteration
+        Control.Monad.when rToggleMemory $ putStrLn $ "|Memory| " ++ showMemory bfState
         read <- prompt
         newState <- processInput read state
-        if replQuit newState then return state -- Quit the repl
-        else do -- Print and then start a new repl iteration
-            Control.Monad.when (replToggleMemory newState) $ putStrLn $ showMemory $ replBfState newState
-            brainfuckRepl newState
+        brainfuckRepl newState
     where
         processInput []    state = return state
         processInput input state = if head input == ':'
@@ -38,7 +38,8 @@ brainfuckRepl state@ReplState{ replBfState = bfState
             -- Apply the brainfuck programming
             else do
                 newBfState <- processInstructions $ addInstructions (replBfState state) input
-                return $ state { replBfState = newBfState }
+                Control.Monad.when ('.' `elem` input) $ putStrLn "" -- Add a newline at the end of a sequence of instructions, only if those instructions actually prints something
+                return state { replBfState = newBfState }
         prompt = do
             putStr "\n~~|"
             hFlush stdout
@@ -47,10 +48,7 @@ brainfuckRepl state@ReplState{ replBfState = bfState
 processReplCommand :: String -> ReplState -> IO ReplState
 processReplCommand str state
     | str `elem` ["h", "help"] = do
-        putStrLn $ formatHelp [ ("help", "Display this help message.")
-                              , ("toggleMemory", "Toggle whether the repl displays Brainfuck state memory after each input.")
-                              , ("quit", "Quit the Brainhask REPL.")
-                              ]
+        putStrLn printHelp
         return state
     | str `elem` ["tm", "toggleMemory"] = do
         return $ state { replToggleMemory = not $ replToggleMemory state }
@@ -59,8 +57,17 @@ processReplCommand str state
         return state { replQuit = True }
     | otherwise = do putStrLn $ str ++ ": Not a valid command."; return state
     where
+        printHelp = "This REPL supports a series of short-form and long-form commands.\nAll commands require ':' in front of them.\n\n" ++
+            formatHelp [ ("help", "h", "Display this help message.")
+                       , ("toggleMemory", "tm", "Toggle whether the repl displays Brainfuck state memory after each input.")
+                       , ("quit", "q", "Quit the Brainhask REPL.")
+                       ] ++ "\n"
         formatHelp commandDescriptions = case commandDescriptions of
             [] -> ""
-            (cmd, desc):remaining -> cmd ++ "      " ++ desc ++
+            (cmd, shrt, desc):remaining -> "    " ++ wordAndSpace cmd 15 ++ 
+                                     wordAndSpace shrt 4 ++ desc ++
                                      if null remaining then ""          -- Don't add an extra "\n" if it's the last entry
                                      else "\n" ++ formatHelp remaining  -- Recurse on the remaining options
+
+wordAndSpace :: String -> Int -> String
+wordAndSpace str len = str ++ replicate (max 1 (len - length str)) ' '
