@@ -1,5 +1,5 @@
 name:                BrainHask
-version:             0.1.0.0
+version:             1.0.0
 github:              "romanZupancic/BrainHask"
 license:             BSD3
 author:              "Roman Zupancic"
@@ -8,7 +8,6 @@ copyright:           "2021 Roman Zupancic"
 
 extra-source-files:
 - README.md
-- ChangeLog.md
 
 # Metadata used when publishing your package
 # synopsis:            Short description of your package
